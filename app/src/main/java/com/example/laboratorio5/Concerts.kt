@@ -22,5 +22,15 @@ fun createConcerts(): List<Concerts> {
     )
 }
 
+val imageMap = mapOf(
+    1 to R.drawable.metallica,
+    2 to R.drawable.eladio,
+    3 to R.drawable.cuco,
+    4 to R.drawable.bad_bunny,
+    5 to R.drawable.dua_lipa,
+    6 to R.drawable.pink_floyd,
+    7 to R.drawable.coldplay,
+)
+
 
 
