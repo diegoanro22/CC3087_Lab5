@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.laboratorio5.ui.theme.Laboratorio5Theme
 
-class MainActivity : ComponentActivity() {
+class Places : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    App(modifier = Modifier.padding(innerPadding))
+                    App_places(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -64,96 +65,62 @@ class MainActivity : ComponentActivity() {
 }
 
 
+
 @Composable
-fun App(modifier: Modifier) {
+fun App_places(modifier: Modifier) {
     val concerts = createConcerts()
-    ConcertsList(concerts = concerts, modifier = modifier)
-
+    PlacesList(concerts = concerts, modifier = modifier)
 }
 
+
 @Composable
-fun ConcertsList(concerts: List<Concerts>, modifier: Modifier) {
-    Column(modifier = modifier.fillMaxSize()) {
-        // Sección "Your Favorites"
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "Your Favorites",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(12.dp),
-            )
-            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
-            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                items(concerts.filter { it.favorite }) { concert ->
-                    ConcertCard(concert = concert)
-                }
-            }
-        }
-
-        // Espacio entre secciones
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Sección "All Concerts"
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "All Concerts",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(12.dp),
-            )
-            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
-            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                items(concerts) { concert ->
-                    ConcertCard(concert = concert)
-                }
-            }
+fun PlacesList(concerts: List<Concerts>, modifier: Modifier) {
+    LazyColumn( modifier = modifier.fillMaxSize()) {
+        items(concerts) { concert ->
+            PlaceCard(concert = concert)
         }
     }
 }
 
-val imageMap = mapOf(
-    1 to R.drawable.metallica,
-    2 to R.drawable.eladio,
-    3 to R.drawable.cuco,
-    4 to R.drawable.bad_bunny,
-    5 to R.drawable.dua_lipa,
-    6 to R.drawable.pink_floyd,
-    7 to R.drawable.coldplay,
-)
-
 @Composable
-fun ConcertCard(concert: Concerts) {
-    val imageResId = imageMap[concert.image]
-    Card(
-        modifier = Modifier.padding(8.dp),
+fun PlaceCard(concert: Concerts) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            imageResId?.let { painterResource(id = it) }?.let {
-                Image(
-                    painter = it,
-                    contentDescription = concert.name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = concert.name, fontWeight = FontWeight.Bold)
-            Text(text = concert.date)
-            Text(text = concert.location)
+        // Icon
+        Icon(
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = null,
+            modifier = Modifier
+                .size(40.dp)
+                .padding(end = 8.dp)
+        )
+
+        // Concert Details
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = concert.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = concert.location,
+                style = MaterialTheme.typography.bodyMedium
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = concert.description)
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
-
-
 }
 
 
-@Preview(showBackground = true)
+@Preview(backgroundColor = 1)
 @Composable
-fun GreetingPreview() {
-    Laboratorio5Theme {
-        App(modifier = Modifier)
-    }
+private fun preview() {
+    App_places(modifier = Modifier)
 }
