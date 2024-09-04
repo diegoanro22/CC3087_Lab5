@@ -63,14 +63,25 @@ fun App_Profile(modifier: Modifier) {
             .padding(16.dp)
     ) {
         // Imagen de fondo
-        Image(
-            painter = painterResource(id = R.drawable.fondo),
-            contentDescription = "Background Image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp) // Ajusta la altura según sea necesario
-                .clip(RoundedCornerShape(8.dp)) // Bordes redondeados
-        )
+        Box(modifier = Modifier, contentAlignment = Alignment.Center){
+            Image(
+                painter = painterResource(id = R.drawable.fondo),
+                contentDescription = "Background Image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp) // Ajusta la altura según sea necesario
+                    .clip(RoundedCornerShape(8.dp)) // Bordes redondeados
+
+            )
+            Image(
+                painter = painterResource(id = R.drawable.dog2),
+                contentDescription = "Background Image",
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(60.dp))
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Contenido del perfil
@@ -110,7 +121,7 @@ fun ProfileActionRow(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .background(Color.White)
+//            .background(Color.White)
             .clip(RoundedCornerShape(8.dp)) // Bordes redondeados para cada fila
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -120,7 +131,9 @@ fun ProfileActionRow(
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
-                .padding(end = 8.dp)
+                .padding(
+                    end = 8.dp
+                )
         )
         Text(
             text = text,
