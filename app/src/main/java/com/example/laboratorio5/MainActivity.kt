@@ -13,27 +13,42 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.laboratorio5.ui.theme.Laboratorio5Theme
 
 class MainActivity : ComponentActivity() {
@@ -43,109 +58,89 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Laboratorio5Theme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        CenterAlignedTopAppBar(
-                            title = { Text("Todo Eventos") },
-                            actions = {
-                                Icon(
-                                    imageVector = Icons.Default.MoreVert,
-                                    contentDescription = null
-                                )
-                            }
-                        )
+                MybottomAppBar()
+            }
+        }
+    }
+}
+
+
+@Composable
+fun MybottomAppBar(){
+    val navigationController = rememberNavController()
+    val context = LocalContext.current.applicationContext
+    val selected = remember {
+        mutableStateOf(Icons.Default.Home)
+    }
+
+    Scaffold (
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color.Black
+            ) {
+                IconButton(onClick = {
+                    selected.value = Icons.Default.Favorite
+                    navigationController.navigate(Screens.Favorite.screens){
+                        popUpTo(0)
                     }
-                ) { innerPadding ->
-                    App(modifier = Modifier.padding(innerPadding))
+                        }, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Default.Favorite, contentDescription = null, modifier = Modifier.size(26.dp),
+                        tint = if (selected.value == Icons.Default.Favorite) Color.Blue else Color.Gray)
+
+                }
+                IconButton(onClick = {
+                    selected.value = Icons.Default.Info
+                    navigationController.navigate(Screens.Details.screens){
+                        popUpTo(0)
+                    }
+                }, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Default.Info, contentDescription = null, modifier = Modifier.size(26.dp),
+                        tint = if (selected.value == Icons.Default.Info) Color.Blue else Color.Gray)
+
+                }
+                IconButton(onClick = {
+                    selected.value = Icons.Default.Place
+                    navigationController.navigate(Screens.Places.screens){
+                        popUpTo(0)
+                    }
+                }, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(26.dp),
+                        tint = if (selected.value == Icons.Default.Place) Color.Blue else Color.Gray)
+
+                }
+                IconButton(onClick = {
+                    selected.value = Icons.Default.Person
+                    navigationController.navigate(Screens.Profile.screens){
+                        popUpTo(0)
+                    }
+                }, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(26.dp),
+                        tint = if (selected.value == Icons.Default.Person) Color.Blue else Color.Gray)
+
                 }
             }
         }
-    }
-}
-
-
-@Composable
-fun App(modifier: Modifier) {
-    val concerts = createConcerts()
-    ConcertsList(concerts = concerts, modifier = modifier)
-
-}
-
-@Composable
-fun ConcertsList(concerts: List<Concerts>, modifier: Modifier) {
-    Column(modifier = modifier.fillMaxSize()) {
-        // Sección "Your Favorites"
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "Your Favorites",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(12.dp),
-            )
-            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
-            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                items(concerts.filter { it.favorite }) { concert ->
-                    ConcertCard(concert = concert)
-                }
-            }
-        }
-
-        // Espacio entre secciones
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Sección "All Concerts"
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "All Concerts",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(12.dp),
-            )
-            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
-            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                items(concerts) { concert ->
-                    ConcertCard(concert = concert)
-                }
-            }
-        }
-    }
-}
-
-
-
-@Composable
-fun ConcertCard(concert: Concerts) {
-    val imageResId = imageMap[concert.image]
-    Card(
-        modifier = Modifier.padding(8.dp),
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            imageResId?.let { painterResource(id = it) }?.let {
-                Image(
-                    painter = it,
-                    contentDescription = concert.name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = concert.name, fontWeight = FontWeight.Bold)
-            Text(text = concert.date)
-            Text(text = concert.location)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = concert.description)
+    ){
+        paddingValues ->
+        NavHost(navController = navigationController,
+            startDestination = Screens.Favorite.screens,
+            modifier = Modifier.padding(paddingValues)){
+            composable(Screens.Favorite.screens){Favorite()}
+            composable(Screens.Details.screens){Details()}
+            composable(Screens.Places.screens){Places()}
+            composable(Screens.Profile.screens){Profile()}
         }
     }
 
-
 }
 
 
-@Preview(showBackground = true)
+
+@Preview
 @Composable
-fun GreetingPreview() {
-    Laboratorio5Theme {
-        App(modifier = Modifier)
+fun MyBootomBarPreview() {
+    Laboratorio5Theme{
+        MybottomAppBar()
     }
+
 }

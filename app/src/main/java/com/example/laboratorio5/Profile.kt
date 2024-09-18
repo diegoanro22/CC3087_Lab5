@@ -27,33 +27,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.laboratorio5.ui.theme.Laboratorio5Theme
 
-class Profile : ComponentActivity() {
+@Composable
+fun Profile () {
     @OptIn(ExperimentalMaterial3Api::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Laboratorio5Theme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        CenterAlignedTopAppBar(
-                            title = { Text("Todo Eventos") },
-                            actions = {
-                                Icon(
-                                    imageVector = Icons.Default.MoreVert,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                    }
-                ) { innerPadding ->
-                    App_Profile(modifier = Modifier.padding(innerPadding))
-                }
-            }
-        }
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+        App_Profile(modifier = Modifier.padding(innerPadding))
     }
-}
+            }
+
+
 
 @Composable
 fun App_Profile(modifier: Modifier) {

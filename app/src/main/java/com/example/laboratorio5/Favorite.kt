@@ -1,6 +1,5 @@
 package com.example.laboratorio5
 
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,34 +36,67 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.laboratorio5.ui.theme.Laboratorio5Theme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Details () {
-    @OptIn(ExperimentalMaterial3Api::class)
-
-        Scaffold(modifier = Modifier.fillMaxSize()
-        ) { innerPadding ->
-            App_Details(modifier = Modifier.padding(innerPadding))
-        }
+fun Favorite() {
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+        App(modifier = Modifier.padding(innerPadding))
     }
+}
 
 @Composable
-fun App_Details(modifier: Modifier){
+fun App(modifier: Modifier) {
     val concerts = createConcerts()
-    DetailsList(concerts = concerts, modifier = modifier)
+    ConcertsList(concerts = concerts, modifier = modifier)
+
 }
 
 @Composable
-fun DetailsList(concerts: List<Concerts>, modifier: Modifier) {
-    LazyColumn( modifier = modifier.fillMaxSize()) {
-        items(concerts) { concert ->
-            DetailsCard(concert = concert)
+fun ConcertsList(concerts: List<Concerts>, modifier: Modifier) {
+    Column(modifier = modifier.fillMaxSize()) {
+        // Sección "Your Favorites"
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Your Favorites",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(12.dp),
+            )
+            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+                items(concerts.filter { it.favorite }) { concert ->
+                    ConcertCard(concert = concert)
+                }
+            }
+        }
+
+        // Espacio entre secciones
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Sección "All Concerts"
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "All Concerts",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(12.dp),
+            )
+            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+                items(concerts) { concert ->
+                    ConcertCard(concert = concert)
+                }
+            }
         }
     }
-
 }
 
+
+
 @Composable
-fun DetailsCard(concert: Concerts) {
+fun ConcertCard(concert: Concerts) {
     val imageResId = imageMap[concert.image]
     Card(
         modifier = Modifier.padding(8.dp),
@@ -84,18 +114,20 @@ fun DetailsCard(concert: Concerts) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = concert.name, fontWeight = FontWeight.Bold)
             Text(text = concert.date)
-            Text(text = "Acerca de: \n" + concert.description)
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-                    Text(text = "Favorite")
-                }
-                Button(onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-                    Text(text = "Buy")
-                }
-            }
-
+            Text(text = concert.location)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = concert.description)
         }
+    }
+
+
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    Laboratorio5Theme {
+        App(modifier = Modifier)
     }
 }
