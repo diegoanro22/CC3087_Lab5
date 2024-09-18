@@ -40,33 +40,37 @@ import androidx.compose.ui.unit.dp
 import com.example.laboratorio5.ui.theme.Laboratorio5Theme
 
 @Composable
-fun Details () {
+fun Details(eventId: Int) {
     @OptIn(ExperimentalMaterial3Api::class)
-
-        Scaffold(modifier = Modifier.fillMaxSize()
-        ) { innerPadding ->
-            App_Details(modifier = Modifier.padding(innerPadding))
-        }
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+        // Aquí pasamos el eventId a App_Details
+        App_Details(eventId = eventId, modifier = Modifier.padding(innerPadding))
     }
+}
 
 @Composable
-fun App_Details(modifier: Modifier){
+fun App_Details(eventId: Int, modifier: Modifier) {
+    // Crear la lista de conciertos
     val concerts = createConcerts()
-    DetailsList(concerts = concerts, modifier = modifier)
-}
 
-@Composable
-fun DetailsList(concerts: List<Concerts>, modifier: Modifier) {
-    LazyColumn( modifier = modifier.fillMaxSize()) {
-        items(concerts) { concert ->
-            DetailsCard(concert = concert)
+    // Buscar el concierto con el ID proporcionado
+    val selectedConcert = concerts.find { it.id == eventId }
+
+    // Si el concierto existe, mostramos sus detalles, si no, mostramos un mensaje de error
+    selectedConcert?.let {
+        DetailsCard(concert = it, modifier = modifier)
+    } ?: run {
+        // Mensaje de error si no se encuentra el concierto
+        Box(modifier = Modifier.fillMaxSize()) {
+            Text(text = "Concierto no encontrado", modifier = Modifier.padding(16.dp))
         }
     }
-
 }
 
 @Composable
-fun DetailsCard(concert: Concerts) {
+fun DetailsCard(concert: Concerts, modifier: Modifier) {
     val imageResId = imageMap[concert.image]
     Card(
         modifier = Modifier.padding(8.dp),
@@ -86,16 +90,23 @@ fun DetailsCard(concert: Concerts) {
             Text(text = concert.date)
             Text(text = "Acerca de: \n" + concert.description)
             Row(modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                ) {
                     Text(text = "Favorite")
                 }
-                Button(onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                ) {
                     Text(text = "Buy")
                 }
             }
-
         }
     }
 }
